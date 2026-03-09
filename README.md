@@ -400,4 +400,21 @@ Designmönster är verktyg, inte mål i sig. **Observer** passar vid en-till-må
 > [!IMPORTANT]
 > Nyckeln är balans: **enklaste lösningen som löser problemet**. Mönster är riktlinjer, inte magi — de ska förenkla, inte imponera.
 
+<br/>
+
+## &nbsp;Författare
+
+<div align="center">
+
+[![Typing SVG](https://readme-typing-svg.demolab.com/?lines=Klas+Olsson;Full-Stack+Developer+%7C+.NET+%7C+React+%7C+AI;NBI-Handelsakademin+%E2%80%94+Systemutvecklare+.NET&font=JetBrains+Mono&center=true&width=500&height=50&color=7aa2f7&vCenter=true&pause=1000&size=18&duration=3000)](https://klasolsson.se)
+
+<br/>
+
+[![Portfolio](https://img.shields.io/badge/klasolsson.se-7aa2f7?style=for-the-badge&logo=googlechrome&logoColor=white)](https://klasolsson.se)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/klasolsson81)
+[![Email](https://img.shields.io/badge/Email-bb9af7?style=for-the-badge&logo=gmail&logoColor=white)](mailto:klasolsson81@gmail.com)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/klasolsson81)
+
+</div>
+
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=0:1a1b27,50:24283b,100:414868&height=120&section=footer)
