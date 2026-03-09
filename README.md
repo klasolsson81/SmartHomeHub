@@ -406,7 +406,13 @@ Designmönster är verktyg, inte mål i sig. **Observer** passar vid en-till-må
 
 <div align="center">
 
-[![Typing SVG](https://readme-typing-svg.demolab.com/?lines=Klas+Olsson;Full-Stack+Developer+%7C+.NET+%7C+React+%7C+AI;NBI-Handelsakademin+%E2%80%94+Systemutvecklare+.NET&font=JetBrains+Mono&center=true&width=500&height=50&color=7aa2f7&vCenter=true&pause=1000&size=18&duration=3000)](https://klasolsson.se)
+<a href="https://github.com/klasolsson81">
+<img src="https://avatars.githubusercontent.com/u/229617477?v=4" width="120" style="border-radius:50%" alt="Klas Olsson" />
+</a>
+
+### Klas Olsson
+
+[![Typing SVG](https://readme-typing-svg.demolab.com/?lines=Full-Stack+Developer+%7C+.NET+%7C+React+%7C+AI;NBI-Handelsakademin+%E2%80%94+Systemutvecklare+.NET&font=JetBrains+Mono&center=true&width=500&height=45&color=a9b1d6&vCenter=true&pause=1000&size=16&duration=3000)](https://klasolsson.se)
 
 <br/>
 
