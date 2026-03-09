@@ -407,7 +407,7 @@ Designmönster är verktyg, inte mål i sig. **Observer** passar vid en-till-må
 <div align="center">
 
 <a href="https://github.com/klasolsson81">
-<img src="https://avatars.githubusercontent.com/u/229617477?v=4" width="120" style="border-radius:50%" alt="Klas Olsson" />
+<img src="https://wsrv.nl/?url=https://github.com/klasolsson81.png?size=120&w=120&h=120&fit=cover&mask=circle" alt="Klas Olsson" />
 </a>
 
 ### Klas Olsson
