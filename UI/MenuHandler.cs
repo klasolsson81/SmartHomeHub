@@ -40,8 +40,8 @@ public class MenuHandler
                         "Add device",
                         "Undo last command",
                         "Replay last commands",
-                        "Show command history",
-                        "Show audit trail",
+                        "Command log (Invoker)",
+                        "Audit trail (Observer)",
                         "Exit"));
 
             AnsiConsole.WriteLine();
@@ -68,8 +68,8 @@ public class MenuHandler
                         ShowWarning("Nothing to undo");
                     break;
                 case "Replay last commands": ReplayCommands(); break;
-                case "Show command history": ShowHistory(); break;
-                case "Show audit trail": ShowAuditTrail(); break;
+                case "Command log (Invoker)": ShowHistory(); break;
+                case "Audit trail (Observer)": ShowAuditTrail(); break;
                 case "Exit": return false;
             }
         }
@@ -252,7 +252,9 @@ public class MenuHandler
         var history = _hub.GetCommandHistory();
         if (history.Count == 0) { AnsiConsole.MarkupLine("[grey]  (empty)[/]"); return; }
 
-        var table = new Table().Border(TableBorder.Simple).AddColumn("Command History");
+        var table = new Table().Border(TableBorder.Simple)
+            .Title("[cyan]Command Invoker — executed commands (undo/replay)[/]")
+            .AddColumn("Command");
         foreach (var entry in history)
             table.AddRow(Markup.Escape(entry));
         AnsiConsole.Write(table);
@@ -263,7 +265,9 @@ public class MenuHandler
         var trail = _hub.GetAuditTrail();
         if (trail.Count == 0) { AnsiConsole.MarkupLine("[grey]  (empty)[/]"); return; }
 
-        var table = new Table().Border(TableBorder.Simple).AddColumn("Audit Trail");
+        var table = new Table().Border(TableBorder.Simple)
+            .Title("[cyan]Observer Audit Trail — device state changes[/]")
+            .AddColumn("Event");
         foreach (var entry in trail)
             table.AddRow(Markup.Escape(entry));
         AnsiConsole.Write(table);

@@ -1,17 +1,34 @@
-# Smart Home Control Center
+![header](https://capsule-render.vercel.app/api?type=waving&color=0:1a1b27,50:24283b,100:414868&height=200&section=header&text=Smart%20Home%20Hub&fontSize=50&fontColor=7aa2f7&animation=fadeIn&fontAlignY=35&desc=OO%20Design%20%E2%80%94%20Designm%C3%B6nster%20i%20praktiken&descAlignY=55&descSize=18&descColor=a9b1d6)
 
-En interaktiv konsollapplikation som simulerar ett smart hem-system. Byggt med 7 designmönster och Spectre.Console för ett modernt terminalbaserat gränssnitt med pilnavigering och validering.
+<div align="center">
 
-## Kör programmet
+[![.NET](https://img.shields.io/badge/.NET_10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](#)
+[![C#](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)](#)
+[![Spectre.Console](https://img.shields.io/badge/Spectre.Console-7aa2f7?style=for-the-badge&logo=windowsterminal&logoColor=white)](#)
+[![Patterns](https://img.shields.io/badge/7_Design_Patterns-bb9af7?style=for-the-badge&logo=dotnet&logoColor=white)](#)
+
+<br/>
+
+En interaktiv konsollapplikation som simulerar ett smart hem-system.<br/>
+Byggt med **7 designmönster** och **Spectre.Console** for modernt terminalbaserat UI med pilnavigering och validering.
+
+</div>
+
+<br/>
+
+## &nbsp;Kör programmet
 
 ```bash
 cd SmartHomeHub
 dotnet run
 ```
 
-Kräver .NET 10 SDK.
+> [!NOTE]
+> Kräver .NET 10 SDK. Appen startar med 3 enheter: Lamp, Termostat och Dörrlås.
 
-## Projektstruktur
+<br/>
+
+## &nbsp;Projektstruktur
 
 ```
 SmartHomeHub/
@@ -26,37 +43,108 @@ SmartHomeHub/
 └── Program.cs           # Startar appen, minimal — delegerar till MenuHandler
 ```
 
-## Designmönster
+<br/>
 
-### 1. Observer — Live-uppdateringar (`Observers/`)
-**Problem:** När en enhet ändrar state behöver flera delar av systemet veta om det — dashboard, logg, audit — utan att enheten ska behöva känna till dem.
-**Lösning:** `DeviceBase` håller en lista av `IObserver`. När state ändras (TurnOn, SetTemperature, Lock) anropas `NotifyObservers()` som meddelar alla prenumeranter. Tre observers — `DashboardObserver`, `LoggerObserver`, `AuditObserver` — reagerar med olika ansvar.
+## &nbsp;Designmönster
 
-### 2. Command — Kommandon som objekt (`Commands/`, `Services/CommandInvoker.cs`)
-**Problem:** Vi vill kunna köa, logga, ångra och återspela åtgärder, inte bara "anropa metoder direkt".
-**Lösning:** Varje åtgärd är ett `ICommand`-objekt med `Execute()` och `Undo()`. `CommandInvoker` hanterar köning, historik, undo och replay av senaste N kommandon. Allt loggas automatiskt via Singleton-loggern.
+<table>
+<tr>
+<td width="50%" valign="top">
 
-### 3. Strategy — Lägesbaserat beteende (`Strategies/`)
+### 1. Observer
+![Observer](https://img.shields.io/badge/Behavioral-Observer-7aa2f7?style=flat-square)
+
+**Problem:** När en enhet ändrar state behöver flera delar av systemet veta — dashboard, logg, audit — utan att enheten ska känna till dem.
+
+**Lösning:** `DeviceBase` håller en lista av `IObserver`. Vid state-ändring anropas `NotifyObservers()` som meddelar alla prenumeranter. Tre observers med olika ansvar: `DashboardObserver`, `LoggerObserver`, `AuditObserver`.
+
+**Filer:** `Observers/`, `Devices/DeviceBase.cs`
+
+</td>
+<td width="50%" valign="top">
+
+### 2. Command
+![Command](https://img.shields.io/badge/Behavioral-Command-7aa2f7?style=flat-square)
+
+**Problem:** Vi vill kunna köa, logga, ångra och återspela åtgärder — inte bara anropa metoder direkt.
+
+**Lösning:** Varje åtgärd är ett `ICommand`-objekt med `Execute()` och `Undo()`. `CommandInvoker` hanterar köning, historik, undo och replay av senaste N kommandon.
+
+**Filer:** `Commands/`, `Services/CommandInvoker.cs`
+
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 3. Strategy
+![Strategy](https://img.shields.io/badge/Behavioral-Strategy-7aa2f7?style=flat-square)
+
 **Problem:** Systemet ska bete sig olika beroende på läge (Eco, Normal, Party) utan en massa if-satser.
-**Lösning:** `IModeStrategy` definierar regler: vilka kommandon tillåts, max temperatur, batch-operationer. `EcoMode` blockerar TurnOn och batch, `PartyMode` tillåter allt med högre temp. Facade frågar aktiv strategy innan varje kommando körs — strategin påverkar kommandon, temperatur och batch.
 
-### 4. Facade — Rent API (`SmartHomeFacade.cs`)
+**Lösning:** `IModeStrategy` definierar regler: tillåtna kommandon, max temperatur, batch-operationer. Facade frågar aktiv strategy innan varje kommando — strategin påverkar kommandon, temperatur och batch.
+
+**Filer:** `Strategies/`, `Interfaces/IModeStrategy.cs`
+
+</td>
+<td width="50%" valign="top">
+
+### 4. Facade
+![Facade](https://img.shields.io/badge/Structural-Facade-bb9af7?style=flat-square)
+
 **Problem:** UI-lagret ska inte behöva veta om observers, invokers, strategies och deras samspel.
-**Lösning:** `SmartHomeFacade` exponerar `AddDevice()`, `RunCommand()`, `SetMode()`, `MorningRoutine()`, `GoodNightRoutine()`, `BatchToggleLamps()` m.m. Returnerar `CommandResult` med status och felmeddelande. UI-lagret anropar Facade — aldrig interna detaljer.
 
-### 5. Singleton — En gemensam Logger (`Services/Logger.cs`)
-**Problem:** Loggning ska ske konsekvent överallt, och alla delar ska dela samma instans.
-**Lösning:** `Logger` använder `Lazy<T>` för thread-safe singleton. Används av `LoggerObserver`, `CommandInvoker`, `SmartHomeFacade` — alla samma instans.
+**Lösning:** `SmartHomeFacade` exponerar ett rent API: `RunCommand()`, `SetMode()`, `MorningRoutine()`, `AddDevice()` m.m. Returnerar `CommandResult` med status och felmeddelande.
 
-### 6. Factory Method (Bonus) — Skapa enheter (`Services/DeviceFactory.cs`)
-**Problem:** Vi vill kunna skapa enheter baserat på en sträng (t.ex. från input) utan att anroparen behöver veta vilken konkret klass som skapas.
-**Lösning:** `DeviceFactory.Create("lamp", "Kitchen Lamp")` returnerar rätt `IDevice`-implementering. Lätt att utöka med nya enhetstyper.
+**Filer:** `SmartHomeFacade.cs`
 
-### 7. Builder (Bonus) — Bygga rutiner stegvis (`Services/RoutineBuilder.cs`)
+</td>
+</tr>
+<tr>
+<td width="50%" valign="top">
+
+### 5. Singleton
+![Singleton](https://img.shields.io/badge/Creational-Singleton-e0af68?style=flat-square)
+
+**Problem:** Loggning ska ske konsekvent överallt, med en enda delad instans.
+
+**Lösning:** `Logger` använder `Lazy<T>` för thread-safe singleton. Används av `LoggerObserver`, `CommandInvoker` och `SmartHomeFacade` — alla delar samma instans.
+
+**Filer:** `Services/Logger.cs`
+
+</td>
+<td width="50%" valign="top">
+
+### 6. Factory Method &nbsp;![Bonus](https://img.shields.io/badge/BONUS-00C853?style=flat-square)
+![Factory](https://img.shields.io/badge/Creational-Factory-e0af68?style=flat-square)
+
+**Problem:** Vi vill skapa enheter baserat på en sträng utan att anroparen behöver veta vilken konkret klass som skapas.
+
+**Lösning:** `DeviceFactory.Create("lamp", "Kitchen Lamp")` returnerar rätt `IDevice`. Lätt att utöka med nya enhetstyper.
+
+**Filer:** `Services/DeviceFactory.cs`
+
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center" valign="top">
+
+### 7. Builder &nbsp;![Bonus](https://img.shields.io/badge/BONUS-00C853?style=flat-square)
+![Builder](https://img.shields.io/badge/Creational-Builder-e0af68?style=flat-square)
+
 **Problem:** Rutiner (sekvenser av kommandon) kan vara komplexa att bygga, och vi vill ha en tydlig, stegvis konstruktion.
-**Lösning:** `RoutineBuilder` med fluent API: `.SetName("Movie Night").AddStep(cmd1).AddStep(cmd2).Build()` returnerar en `Routine` som kan exekveras via Facade.
 
-## Demo Output (utdrag)
+**Lösning:** `RoutineBuilder` med fluent API: `.SetName("Movie Night").AddStep(cmd1).AddStep(cmd2).Build()` returnerar en `Routine` som exekveras via Facade.
+
+**Filer:** `Services/RoutineBuilder.cs`
+
+</td>
+</tr>
+</table>
+
+<br/>
+
+## &nbsp;Demo
 
 ```
 ╭──────────────────────────────────────╮
@@ -82,22 +170,44 @@ What do you want to do?
   Add device
   Undo last command
   Replay last commands
-  Show command history
-  Show audit trail
+  Command log (Invoker)
+  Audit trail (Observer)
   Exit
 ```
 
-Menyn navigeras med piltangenter. Temperatur och andra input valideras i realtid — felaktiga värden blockeras direkt med tydliga felmeddelanden.
+> [!TIP]
+> Menyn navigeras med piltangenter. Temperatur och andra input valideras i realtid — felaktiga värden blockeras direkt.
 
-## Clean Code
+<br/>
 
-- **SRP:** UI-logik i `UI/`-mappen, affärslogik i Facade/Commands/Services. Ingen Console-output i affärslagret.
-- **DRY:** Gemensam `DeviceBase` för observer-hantering, `HandleResult()` för enhetlig felvisning.
-- **Felhantering:** try-catch i menyn, `CommandResult` för kontrollerade felfall, Spectre.Console-validering på alla input.
-- **Lager:** Program → MenuHandler → SmartHomeFacade → Commands/Invoker/Devices
+## &nbsp;Clean Code
 
-## Reflektion — När man INTE ska använda mönster
+<table>
+<tr>
+<td width="25%" align="center"><strong>SRP</strong></td>
+<td>UI-logik i <code>UI/</code>, affärslogik i Facade/Commands/Services. Ingen Console-output i affärslagret.</td>
+</tr>
+<tr>
+<td align="center"><strong>DRY</strong></td>
+<td>Gemensam <code>DeviceBase</code> för observer-hantering, <code>HandleResult()</code> för enhetlig felvisning.</td>
+</tr>
+<tr>
+<td align="center"><strong>Felhantering</strong></td>
+<td>try-catch i menyn, <code>CommandResult</code> för kontrollerade felfall, Spectre.Console-validering på alla input.</td>
+</tr>
+<tr>
+<td align="center"><strong>Lager</strong></td>
+<td><code>Program → MenuHandler → SmartHomeFacade → Commands/Invoker/Devices</code></td>
+</tr>
+</table>
 
-Designmönster är verktyg, inte mål i sig. Observer passar när det finns en-till-många-relationer, men om bara en klass bryr sig om en ändring är en enkel metodanrop bättre — mönstret skapar onödig komplexitet. Singleton är bekvämt för loggning, men kan göra testning svår och skapa dolda beroenden — i ett större projekt hade jag använt dependency injection istället. Command är perfekt när man behöver undo/replay, men för en enkel "byt lampan" utan historik är det overkill.
+<br/>
 
-Nyckeln är balans: **enklaste lösningen som löser problemet**. Mönster är riktlinjer, inte magi — de ska förenkla, inte imponera.
+## &nbsp;Reflektion — När man INTE ska använda mönster
+
+Designmönster är verktyg, inte mål i sig. **Observer** passar vid en-till-många-relationer, men om bara en klass bryr sig om en ändring är ett enkelt metodanrop bättre — mönstret skapar onödig komplexitet. **Singleton** är bekvämt för loggning, men kan göra testning svår och skapa dolda beroenden — i ett större projekt hade jag använt dependency injection istället. **Command** är perfekt när man behöver undo/replay, men för en enkel "byt lampan" utan historik är det overkill.
+
+> [!IMPORTANT]
+> Nyckeln är balans: **enklaste lösningen som löser problemet**. Mönster är riktlinjer, inte magi — de ska förenkla, inte imponera.
+
+![footer](https://capsule-render.vercel.app/api?type=waving&color=0:1a1b27,50:24283b,100:414868&height=120&section=footer)
