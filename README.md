@@ -356,34 +356,9 @@ classDiagram
 
 ## &nbsp;Demo
 
-```
-╭──────────────────────────────────────╮
-│   Smart Home Control Center          │
-├──────────────┬───────────────────────┤
-│ Device       │ Status                │
-├──────────────┼───────────────────────┤
-│ Mode         │ Normal                │
-│ Living Room  │ OFF                   │
-│ Main Thermo  │ 20°C ON              │
-│ Front Door   │ Locked                │
-╰──────────────┴───────────────────────╯
-
-What do you want to do?
-> Toggle device
-  Set temperature
-  Lock / Unlock door
-  Change mode
-  Morning Routine
-  Good Night Routine
-  Build custom routine
-  Batch: all lamps ON
-  Add device
-  Undo last command
-  Replay last commands
-  Command log (Invoker)
-  Audit trail (Observer)
-  Exit
-```
+<div align="center">
+<img src="UI/demo.png" alt="Smart Home Hub — huvudmeny" width="500" />
+</div>
 
 > [!TIP]
 > Menyn navigeras med piltangenter. Temperatur och andra input valideras i realtid — felaktiga värden blockeras direkt.
