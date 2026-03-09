@@ -9,6 +9,7 @@ public class SetTemperatureCommand : ICommand
     private readonly int _newTemp;
     private readonly int _previousTemp;
 
+    public int NewTemp => _newTemp;
     public string Description => $"SetTemperature({_thermostat.Name}, {_newTemp}°C)";
 
     public SetTemperatureCommand(Thermostat thermostat, int newTemp)

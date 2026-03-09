@@ -31,40 +31,31 @@ public class CommandInvoker
         Logger.Instance.Log($"Executed: {command.Description}");
     }
 
-    public void UndoLast()
+    public bool UndoLast()
     {
         if (_history.Count == 0)
-        {
-            Console.WriteLine("  Nothing to undo.");
-            return;
-        }
+            return false;
 
         var last = _history[^1];
         _history.RemoveAt(_history.Count - 1);
         last.Undo();
         Logger.Instance.Log($"Undo: {last.Description}");
+        return true;
     }
 
-    public void ReplayLast(int count = 5)
+    public int ReplayLast(int count = 5)
     {
         var toReplay = _history.TakeLast(Math.Min(count, _history.Count)).ToList();
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine($"\n  ↻ Replaying last {toReplay.Count} command(s)...");
-        Console.ResetColor();
 
         foreach (var cmd in toReplay)
         {
             cmd.Execute();
             Logger.Instance.Log($"Replayed: {cmd.Description}");
         }
+
+        return toReplay.Count;
     }
 
-    public void PrintHistory()
-    {
-        Console.ForegroundColor = ConsoleColor.DarkCyan;
-        Console.WriteLine("\n  Command History:");
-        for (int i = 0; i < _history.Count; i++)
-            Console.WriteLine($"    {i + 1}. {_history[i].Description}");
-        Console.ResetColor();
-    }
+    public IReadOnlyList<string> GetHistory() =>
+        _history.Select((cmd, i) => $"{i + 1}. {cmd.Description}").ToList();
 }

@@ -12,8 +12,5 @@ public class AuditObserver : IObserver
     {
         var entry = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {deviceName}: {eventDescription}";
         _auditTrail.Add(entry);
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.WriteLine($"  [AUDIT] {entry}");
-        Console.ResetColor();
     }
 }

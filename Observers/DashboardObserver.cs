@@ -4,10 +4,12 @@ namespace SmartHomeHub.Observers;
 
 public class DashboardObserver : IObserver
 {
+    private readonly List<string> _notifications = [];
+
+    public IReadOnlyList<string> Notifications => _notifications;
+
     public void Update(string deviceName, string eventDescription)
     {
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine($"  [DASHBOARD] {deviceName} → {eventDescription}");
-        Console.ResetColor();
+        _notifications.Add($"{deviceName} → {eventDescription}");
     }
 }

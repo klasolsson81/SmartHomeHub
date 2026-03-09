@@ -16,6 +16,9 @@ public class SmartHomeFacade
     private readonly AuditObserver _audit = new();
     private IModeStrategy _mode = new NormalMode();
 
+    public string CurrentModeName => _mode.ModeName;
+    public IReadOnlyList<IDevice> Devices => _devices;
+
     public void AddDevice(IDevice device)
     {
         _devices.Add(device);
@@ -33,24 +36,22 @@ public class SmartHomeFacade
     public void SetMode(IModeStrategy mode)
     {
         _mode = mode;
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine($"\n  ★ Mode changed to: {_mode.ModeName}");
-        Console.ResetColor();
         Logger.Instance.Log($"Mode set to {_mode.ModeName}");
     }
 
-    public void RunCommand(ICommand command)
+    public int GetMaxTemperature() => _mode.GetMaxTemperature();
+    public bool AllowsBatch() => _mode.AllowBatchOperations();
+
+    public CommandResult RunCommand(ICommand command)
     {
         if (!_mode.AllowCommand(command))
-            return;
+            return CommandResult.Blocked($"Blocked by {_mode.ModeName}");
 
-        if (command is SetTemperatureCommand tempCmd)
-        {
-            var maxTemp = _mode.GetMaxTemperature();
-            Logger.Instance.Log($"Mode {_mode.ModeName} allows max {maxTemp}°C");
-        }
+        if (command is SetTemperatureCommand tempCmd && tempCmd.NewTemp > _mode.GetMaxTemperature())
+            return CommandResult.Blocked($"Temperature exceeds max {_mode.GetMaxTemperature()}°C in {_mode.ModeName}");
 
         _invoker.ExecuteSingle(command);
+        return CommandResult.Ok();
     }
 
     public void QueueCommand(ICommand command)
@@ -60,69 +61,48 @@ public class SmartHomeFacade
     }
 
     public void ExecuteQueue() => _invoker.ExecuteAll();
-
-    public void UndoLast() => _invoker.UndoLast();
-
-    public void ReplayLast(int count = 5) => _invoker.ReplayLast(count);
+    public bool UndoLast() => _invoker.UndoLast();
+    public int ReplayLast(int count = 5) => _invoker.ReplayLast(count);
 
     public void MorningRoutine()
     {
-        Console.ForegroundColor = ConsoleColor.Yellow;
-        Console.WriteLine("\n  ☀ Running Morning Routine...");
-        Console.ResetColor();
-
+        Logger.Instance.Log("Running Morning Routine");
         foreach (var device in _devices)
         {
-            if (device is Lamp lamp)
-                RunCommand(new TurnOnCommand(lamp));
-            else if (device is Thermostat thermo)
-                RunCommand(new SetTemperatureCommand(thermo, 22));
-            else if (device is DoorLock doorLock)
-                RunCommand(new LockDoorCommand(doorLock, false));
+            if (device is Lamp lamp) RunCommand(new TurnOnCommand(lamp));
+            else if (device is Thermostat t) RunCommand(new SetTemperatureCommand(t, 22));
+            else if (device is DoorLock d) RunCommand(new LockDoorCommand(d, false));
         }
     }
 
     public void GoodNightRoutine()
     {
-        Console.ForegroundColor = ConsoleColor.DarkBlue;
-        Console.WriteLine("\n  🌙 Running Good Night Routine...");
-        Console.ResetColor();
-
+        Logger.Instance.Log("Running Good Night Routine");
         foreach (var device in _devices)
         {
-            if (device is Lamp lamp)
-                RunCommand(new TurnOffCommand(lamp));
-            else if (device is Thermostat thermo)
-                RunCommand(new SetTemperatureCommand(thermo, 18));
-            else if (device is DoorLock doorLock)
-                RunCommand(new LockDoorCommand(doorLock, true));
+            if (device is Lamp lamp) RunCommand(new TurnOffCommand(lamp));
+            else if (device is Thermostat t) RunCommand(new SetTemperatureCommand(t, 18));
+            else if (device is DoorLock d) RunCommand(new LockDoorCommand(d, true));
         }
     }
 
-    public void BatchToggleLamps(bool on)
+    public CommandResult BatchToggleLamps(bool on)
     {
         if (!_mode.AllowBatchOperations())
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"  ⚠ Batch operations not allowed in {_mode.ModeName} mode");
-            Console.ResetColor();
-            return;
-        }
+            return CommandResult.Blocked($"Batch not allowed in {_mode.ModeName}");
 
-        foreach (var device in _devices.OfType<Lamp>())
-            RunCommand(on ? new TurnOnCommand(device) : new TurnOffCommand(device));
+        foreach (var lamp in _devices.OfType<Lamp>())
+            RunCommand(on ? new TurnOnCommand(lamp) : new TurnOffCommand(lamp));
+
+        return CommandResult.Ok();
     }
 
-    public void ShowStatus()
-    {
-        Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine($"\n  ═══ Smart Home Status ({_mode.ModeName}) ═══");
-        foreach (var device in _devices)
-            Console.WriteLine($"    {device.GetStatus()}");
-        Console.ResetColor();
-    }
-
-    public void ShowCommandHistory() => _invoker.PrintHistory();
-
+    public IReadOnlyList<string> GetCommandHistory() => _invoker.GetHistory();
     public IReadOnlyList<string> GetAuditTrail() => _audit.AuditTrail;
+}
+
+public record CommandResult(bool Success, string? Message)
+{
+    public static CommandResult Ok() => new(true, null);
+    public static CommandResult Blocked(string reason) => new(false, reason);
 }

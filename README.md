@@ -1,6 +1,6 @@
 # Smart Home Control Center
 
-En konsollapplikation som simulerar ett smart hem-system. Byggt med 7 designmönster för att visa hur de löser verkliga problem — inte som pynt, utan som verktyg.
+En interaktiv konsollapplikation som simulerar ett smart hem-system. Byggt med 7 designmönster och Spectre.Console för ett modernt terminalbaserat gränssnitt med pilnavigering och validering.
 
 ## Kör programmet
 
@@ -21,8 +21,9 @@ SmartHomeHub/
 ├── Observers/           # DashboardObserver, LoggerObserver, AuditObserver
 ├── Strategies/          # EcoMode, NormalMode, PartyMode
 ├── Services/            # Logger (Singleton), CommandInvoker, DeviceFactory, RoutineBuilder
+├── UI/                  # MenuHandler (interaktiv meny), StatusDisplay (enhetsstatus)
 ├── SmartHomeFacade.cs   # Facade — huvudingång till hela systemet
-└── Program.cs           # Interaktiv meny — styr hemmet via Facade
+└── Program.cs           # Startar appen, minimal — delegerar till MenuHandler
 ```
 
 ## Designmönster
@@ -40,12 +41,12 @@ SmartHomeHub/
 **Lösning:** `IModeStrategy` definierar regler: vilka kommandon tillåts, max temperatur, batch-operationer. `EcoMode` blockerar TurnOn och batch, `PartyMode` tillåter allt med högre temp. Facade frågar aktiv strategy innan varje kommando körs — strategin påverkar kommandon, temperatur och batch.
 
 ### 4. Facade — Rent API (`SmartHomeFacade.cs`)
-**Problem:** `Program.cs` ska inte behöva veta om observers, invokers, strategies och deras samspel.
-**Lösning:** `SmartHomeFacade` exponerar `AddDevice()`, `RunCommand()`, `SetMode()`, `MorningRoutine()`, `GoodNightRoutine()`, `BatchToggleLamps()` m.m. Allt styrs via Facade — main-programmet petar aldrig i interna detaljer.
+**Problem:** UI-lagret ska inte behöva veta om observers, invokers, strategies och deras samspel.
+**Lösning:** `SmartHomeFacade` exponerar `AddDevice()`, `RunCommand()`, `SetMode()`, `MorningRoutine()`, `GoodNightRoutine()`, `BatchToggleLamps()` m.m. Returnerar `CommandResult` med status och felmeddelande. UI-lagret anropar Facade — aldrig interna detaljer.
 
 ### 5. Singleton — En gemensam Logger (`Services/Logger.cs`)
 **Problem:** Loggning ska ske konsekvent överallt, och alla delar ska dela samma instans.
-**Lösning:** `Logger` använder `Lazy<T>` för thread-safe singleton. Används av `LoggerObserver`, `CommandInvoker`, `SmartHomeFacade` — alla samma instans, verifierat i demo med `ReferenceEquals`.
+**Lösning:** `Logger` använder `Lazy<T>` för thread-safe singleton. Används av `LoggerObserver`, `CommandInvoker`, `SmartHomeFacade` — alla samma instans.
 
 ### 6. Factory Method (Bonus) — Skapa enheter (`Services/DeviceFactory.cs`)
 **Problem:** Vi vill kunna skapa enheter baserat på en sträng (t.ex. från input) utan att anroparen behöver veta vilken konkret klass som skapas.
@@ -58,38 +59,42 @@ SmartHomeHub/
 ## Demo Output (utdrag)
 
 ```
-╔═══════════════════════════════════════════════╗
-║         🏠 Smart Home Control Center          ║
-╠═══════════════════════════════════════════════╣
-║  1.  Toggle lamp (on/off)                     ║
-║  2.  Set temperature                          ║
-║  3.  Lock / Unlock door                       ║
-║  4.  Change mode (Eco/Normal/Party)           ║
-║  5.  Run Morning Routine                      ║
-║  6.  Run Good Night Routine                   ║
-║  7.  Build custom routine (Builder)           ║
-║  8.  Batch: all lamps ON                      ║
-║  9.  Undo last command                        ║
-║  10. Replay last commands                     ║
-║  11. Show status                              ║
-║  12. Show command history                     ║
-║  13. Show audit trail                         ║
-║  0.  Exit                                     ║
-╚═══════════════════════════════════════════════╝
-  Choose: 1
-  Living Room Lamp is OFF → turning ON
-  [DASHBOARD] Living Room Lamp → turned ON
-  [LOG] Living Room Lamp → turned ON
-  [AUDIT] Living Room Lamp: turned ON
+╭──────────────────────────────────────╮
+│   Smart Home Control Center          │
+├──────────────┬───────────────────────┤
+│ Device       │ Status                │
+├──────────────┼───────────────────────┤
+│ Mode         │ Normal                │
+│ Living Room  │ OFF                   │
+│ Main Thermo  │ 20°C ON              │
+│ Front Door   │ Locked                │
+╰──────────────┴───────────────────────╯
 
-  Choose: 4
-  1. Normal  2. Eco  3. Party
-  Choose mode: 2
-  ★ Mode changed to: Eco 🌿
-
-  Choose: 1
-  ⚠ EcoMode: TurnOn(Living Room Lamp) blocked — save energy!
+What do you want to do?
+> Toggle device
+  Set temperature
+  Lock / Unlock door
+  Change mode
+  Morning Routine
+  Good Night Routine
+  Build custom routine
+  Batch: all lamps ON
+  Add device
+  Undo last command
+  Replay last commands
+  Show command history
+  Show audit trail
+  Exit
 ```
+
+Menyn navigeras med piltangenter. Temperatur och andra input valideras i realtid — felaktiga värden blockeras direkt med tydliga felmeddelanden.
+
+## Clean Code
+
+- **SRP:** UI-logik i `UI/`-mappen, affärslogik i Facade/Commands/Services. Ingen Console-output i affärslagret.
+- **DRY:** Gemensam `DeviceBase` för observer-hantering, `HandleResult()` för enhetlig felvisning.
+- **Felhantering:** try-catch i menyn, `CommandResult` för kontrollerade felfall, Spectre.Console-validering på alla input.
+- **Lager:** Program → MenuHandler → SmartHomeFacade → Commands/Invoker/Devices
 
 ## Reflektion — När man INTE ska använda mönster
 
