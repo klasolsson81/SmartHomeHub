@@ -144,6 +144,216 @@ SmartHomeHub/
 
 <br/>
 
+## &nbsp;Klassdiagram
+
+```mermaid
+classDiagram
+    direction TB
+
+    class IDevice {
+        <<interface>>
+        +string Name
+        +bool IsOn
+        +TurnOn()
+        +TurnOff()
+        +GetStatus() string
+    }
+
+    class ICommand {
+        <<interface>>
+        +string Description
+        +Execute()
+        +Undo()
+    }
+
+    class IObserver {
+        <<interface>>
+        +Update(deviceName, eventDescription)
+    }
+
+    class IModeStrategy {
+        <<interface>>
+        +string ModeName
+        +AllowCommand(ICommand) bool
+        +GetMaxTemperature() int
+        +AllowBatchOperations() bool
+    }
+
+    class DeviceBase {
+        <<abstract>>
+        +string Name
+        +bool IsOn
+        +Subscribe(IObserver)
+        +Unsubscribe(IObserver)
+        #NotifyObservers(string)
+        +TurnOn()
+        +TurnOff()
+        +GetStatus()* string
+    }
+
+    class Lamp {
+        +GetStatus() string
+    }
+
+    class Thermostat {
+        +int Temperature
+        +SetTemperature(int)
+        +GetStatus() string
+    }
+
+    class DoorLock {
+        +bool IsLocked
+        +Lock()
+        +Unlock()
+        +GetStatus() string
+    }
+
+    class TurnOnCommand {
+        +Execute()
+        +Undo()
+    }
+
+    class TurnOffCommand {
+        +Execute()
+        +Undo()
+    }
+
+    class SetTemperatureCommand {
+        +int NewTemp
+        +Execute()
+        +Undo()
+    }
+
+    class LockDoorCommand {
+        +Execute()
+        +Undo()
+    }
+
+    class CommandInvoker {
+        +Enqueue(ICommand)
+        +ExecuteAll()
+        +ExecuteSingle(ICommand)
+        +UndoLast() bool
+        +ReplayLast(int) int
+        +GetHistory() IReadOnlyList
+    }
+
+    class SmartHomeFacade {
+        +IReadOnlyList~IDevice~ Devices
+        +string CurrentModeName
+        +AddDevice(IDevice)
+        +RunCommand(ICommand) CommandResult
+        +SetMode(IModeStrategy)
+        +MorningRoutine()
+        +GoodNightRoutine()
+        +BatchToggleLamps(bool) CommandResult
+        +UndoLast() bool
+        +ReplayLast(int) int
+    }
+
+    class CommandResult {
+        <<record>>
+        +bool Success
+        +string? Message
+        +Ok()$ CommandResult
+        +Blocked(string)$ CommandResult
+    }
+
+    class Logger {
+        <<Singleton>>
+        +Logger Instance$
+        +Log(string)
+        +SuppressOutput(bool)
+    }
+
+    class DeviceFactory {
+        +Create(type, name)$ IDevice
+    }
+
+    class RoutineBuilder {
+        +SetName(string) RoutineBuilder
+        +AddStep(ICommand) RoutineBuilder
+        +Build() Routine
+    }
+
+    class Routine {
+        +string Name
+        +Execute(SmartHomeFacade)
+    }
+
+    class NormalMode {
+        +ModeName = "Normal"
+        +GetMaxTemperature() 30
+    }
+
+    class EcoMode {
+        +ModeName = "Eco"
+        +GetMaxTemperature() 22
+    }
+
+    class PartyMode {
+        +ModeName = "Party"
+        +GetMaxTemperature() 35
+    }
+
+    class DashboardObserver {
+        +IReadOnlyList Notifications
+        +Update(string, string)
+    }
+
+    class LoggerObserver {
+        +Update(string, string)
+    }
+
+    class AuditObserver {
+        +IReadOnlyList AuditTrail
+        +Update(string, string)
+    }
+
+    class MenuHandler {
+        +Run() bool
+    }
+
+    IDevice <|.. DeviceBase
+    DeviceBase <|-- Lamp
+    DeviceBase <|-- Thermostat
+    DeviceBase <|-- DoorLock
+
+    ICommand <|.. TurnOnCommand
+    ICommand <|.. TurnOffCommand
+    ICommand <|.. SetTemperatureCommand
+    ICommand <|.. LockDoorCommand
+
+    IModeStrategy <|.. NormalMode
+    IModeStrategy <|.. EcoMode
+    IModeStrategy <|.. PartyMode
+
+    IObserver <|.. DashboardObserver
+    IObserver <|.. LoggerObserver
+    IObserver <|.. AuditObserver
+
+    DeviceBase o-- IObserver : observers
+
+    SmartHomeFacade *-- CommandInvoker
+    SmartHomeFacade *-- DashboardObserver
+    SmartHomeFacade *-- LoggerObserver
+    SmartHomeFacade *-- AuditObserver
+    SmartHomeFacade o-- IModeStrategy : active mode
+    SmartHomeFacade o-- IDevice : devices
+
+    CommandInvoker o-- ICommand : history
+
+    RoutineBuilder o-- ICommand : steps
+    RoutineBuilder --> Routine : builds
+
+    DeviceFactory ..> IDevice : creates
+
+    MenuHandler --> SmartHomeFacade : uses
+    LoggerObserver --> Logger : uses
+```
+
+<br/>
+
 ## &nbsp;Demo
 
 ```
