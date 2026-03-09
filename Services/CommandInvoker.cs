@@ -2,6 +2,9 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.Services;
 
+/// <summary>
+/// Hanterar exekvering, köhantering, historik och undo av kommandon.
+/// </summary>
 public class CommandInvoker
 {
     private readonly Queue<ICommand> _queue = new();

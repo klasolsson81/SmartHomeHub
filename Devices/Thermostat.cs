@@ -1,5 +1,8 @@
 namespace SmartHomeHub.Devices;
 
+/// <summary>
+/// Termostat — hanterar temperatur och notifierar observers vid ändringar.
+/// </summary>
 public class Thermostat : DeviceBase
 {
     public int Temperature { get; private set; } = 20;

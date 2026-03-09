@@ -2,6 +2,9 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.Observers;
 
+/// <summary>
+/// Observer — sparar tidsstämplade händelser för revision/spårbarhet.
+/// </summary>
 public class AuditObserver : IObserver
 {
     private readonly List<string> _auditTrail = [];

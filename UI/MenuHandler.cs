@@ -7,6 +7,9 @@ using SmartHomeHub.Strategies;
 
 namespace SmartHomeHub.UI;
 
+/// <summary>
+/// Interaktiv meny med Spectre.Console — delegerar alla åtgärder till SmartHomeFacade.
+/// </summary>
 public class MenuHandler
 {
     private readonly SmartHomeFacade _hub;

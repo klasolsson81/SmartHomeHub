@@ -3,6 +3,9 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.Commands;
 
+/// <summary>
+/// Command — låser eller låser upp ett dörrlås. Undo gör motsatsen.
+/// </summary>
 public class LockDoorCommand : ICommand
 {
     private readonly DoorLock _doorLock;

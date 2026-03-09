@@ -4,6 +4,9 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.UI;
 
+/// <summary>
+/// Renderar enhetsstatus och senaste notifikationer som en Spectre.Console-tabell.
+/// </summary>
 public static class StatusDisplay
 {
     public static void Render(SmartHomeFacade hub)

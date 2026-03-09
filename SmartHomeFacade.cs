@@ -7,6 +7,10 @@ using SmartHomeHub.Strategies;
 
 namespace SmartHomeHub;
 
+/// <summary>
+/// Facade — enda ingångspunkt till systemet.
+/// Samordnar enheter, kommandon, observers och strategy-lägen.
+/// </summary>
 public class SmartHomeFacade
 {
     private readonly List<IDevice> _devices = [];
@@ -118,6 +122,9 @@ public class SmartHomeFacade
     public IReadOnlyList<string> GetNotifications() => _dashboard.Notifications;
 }
 
+/// <summary>
+/// Resultat från ett kommando — anger om det lyckades eller blockerades.
+/// </summary>
 public record CommandResult(bool Success, string? Message)
 {
     public static CommandResult Ok() => new(true, null);

@@ -3,6 +3,9 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.Commands;
 
+/// <summary>
+/// Command — ändrar temperatur på en termostat. Sparar föregående värde för undo.
+/// </summary>
 public class SetTemperatureCommand : ICommand
 {
     private readonly Thermostat _thermostat;

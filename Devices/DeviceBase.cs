@@ -2,6 +2,10 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.Devices;
 
+/// <summary>
+/// Abstrakt basklass för alla smarta enheter.
+/// Implementerar Observer-subjekt (subscribe/notify) och gemensam on/off-logik.
+/// </summary>
 public abstract class DeviceBase : IDevice, IObservable
 {
     private readonly List<IObserver> _observers = [];

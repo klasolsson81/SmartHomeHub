@@ -1,5 +1,8 @@
 namespace SmartHomeHub.Devices;
 
+/// <summary>
+/// Dörrlås — kan låsas och låsas upp, notifierar observers.
+/// </summary>
 public class DoorLock : DeviceBase
 {
     public bool IsLocked { get; private set; } = true;

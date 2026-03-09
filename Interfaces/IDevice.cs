@@ -1,5 +1,8 @@
 namespace SmartHomeHub.Interfaces;
 
+/// <summary>
+/// Kontrakt för alla smarta enheter i systemet.
+/// </summary>
 public interface IDevice
 {
     string Name { get; }

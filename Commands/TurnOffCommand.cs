@@ -2,6 +2,9 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.Commands;
 
+/// <summary>
+/// Command — stänger av en enhet. Undo slår på den.
+/// </summary>
 public class TurnOffCommand : ICommand
 {
     private readonly IDevice _device;

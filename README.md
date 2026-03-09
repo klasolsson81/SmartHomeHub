@@ -238,7 +238,7 @@ classDiagram
         +ExecuteAll()
         +ExecuteSingle(ICommand)
         +UndoLast() bool
-        +ReplayLast(int) int
+        +GetLastCommands(int) IReadOnlyList
         +GetHistory() IReadOnlyList
     }
 
@@ -282,7 +282,7 @@ classDiagram
 
     class Routine {
         +string Name
-        +Execute(SmartHomeFacade)
+        +Execute(Action~ICommand~)
     }
 
     class NormalMode {
