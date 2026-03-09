@@ -54,15 +54,31 @@ public class SmartHomeFacade
         return CommandResult.Ok();
     }
 
-    public void QueueCommand(ICommand command)
+    public CommandResult QueueCommand(ICommand command)
     {
-        if (_mode.AllowCommand(command))
-            _invoker.Enqueue(command);
+        if (!_mode.AllowCommand(command))
+            return CommandResult.Blocked($"Blocked by {_mode.ModeName}");
+
+        _invoker.Enqueue(command);
+        return CommandResult.Ok();
     }
 
     public void ExecuteQueue() => _invoker.ExecuteAll();
     public bool UndoLast() => _invoker.UndoLast();
-    public int ReplayLast(int count = 5) => _invoker.ReplayLast(count);
+
+    public int ReplayLast(int count = 5)
+    {
+        var commands = _invoker.GetLastCommands(count);
+        var replayed = 0;
+
+        foreach (var cmd in commands)
+        {
+            if (RunCommand(cmd).Success)
+                replayed++;
+        }
+
+        return replayed;
+    }
 
     public void MorningRoutine()
     {

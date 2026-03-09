@@ -7,7 +7,7 @@ public class SetTemperatureCommand : ICommand
 {
     private readonly Thermostat _thermostat;
     private readonly int _newTemp;
-    private readonly int _previousTemp;
+    private int _previousTemp;
 
     public int NewTemp => _newTemp;
     public string Description => $"SetTemperature({_thermostat.Name}, {_newTemp}°C)";
@@ -16,9 +16,13 @@ public class SetTemperatureCommand : ICommand
     {
         _thermostat = thermostat;
         _newTemp = newTemp;
-        _previousTemp = thermostat.Temperature;
     }
 
-    public void Execute() => _thermostat.SetTemperature(_newTemp);
+    public void Execute()
+    {
+        _previousTemp = _thermostat.Temperature;
+        _thermostat.SetTemperature(_newTemp);
+    }
+
     public void Undo() => _thermostat.SetTemperature(_previousTemp);
 }

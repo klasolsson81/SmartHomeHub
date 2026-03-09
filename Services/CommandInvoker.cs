@@ -43,18 +43,8 @@ public class CommandInvoker
         return true;
     }
 
-    public int ReplayLast(int count = 5)
-    {
-        var toReplay = _history.TakeLast(Math.Min(count, _history.Count)).ToList();
-
-        foreach (var cmd in toReplay)
-        {
-            cmd.Execute();
-            Logger.Instance.Log($"Replayed: {cmd.Description}");
-        }
-
-        return toReplay.Count;
-    }
+    public IReadOnlyList<ICommand> GetLastCommands(int count = 5) =>
+        _history.TakeLast(Math.Min(count, _history.Count)).ToList();
 
     public IReadOnlyList<string> GetHistory() =>
         _history.Select((cmd, i) => $"{i + 1}. {cmd.Description}").ToList();
