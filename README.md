@@ -22,7 +22,7 @@ SmartHomeHub/
 ├── Strategies/          # EcoMode, NormalMode, PartyMode
 ├── Services/            # Logger (Singleton), CommandInvoker, DeviceFactory, RoutineBuilder
 ├── SmartHomeFacade.cs   # Facade — huvudingång till hela systemet
-└── Program.cs           # Demo som visar alla mönster i aktion
+└── Program.cs           # Interaktiv meny — styr hemmet via Facade
 ```
 
 ## Designmönster
@@ -59,27 +59,36 @@ SmartHomeHub/
 
 ```
 ╔═══════════════════════════════════════════════╗
-║      🏠 Smart Home Control Center 🏠         ║
+║         🏠 Smart Home Control Center          ║
+╠═══════════════════════════════════════════════╣
+║  1.  Toggle lamp (on/off)                     ║
+║  2.  Set temperature                          ║
+║  3.  Lock / Unlock door                       ║
+║  4.  Change mode (Eco/Normal/Party)           ║
+║  5.  Run Morning Routine                      ║
+║  6.  Run Good Night Routine                   ║
+║  7.  Build custom routine (Builder)           ║
+║  8.  Batch: all lamps ON                      ║
+║  9.  Undo last command                        ║
+║  10. Replay last commands                     ║
+║  11. Show status                              ║
+║  12. Show command history                     ║
+║  13. Show audit trail                         ║
+║  0.  Exit                                     ║
 ╚═══════════════════════════════════════════════╝
-
-  Singleton check: same Logger? True
-
-── Observer Demo ──────────────────────────────
+  Choose: 1
+  Living Room Lamp is OFF → turning ON
   [DASHBOARD] Living Room Lamp → turned ON
   [LOG] Living Room Lamp → turned ON
   [AUDIT] Living Room Lamp: turned ON
 
-── Strategy Demo ─────────────────────────────
+  Choose: 4
+  1. Normal  2. Eco  3. Party
+  Choose mode: 2
   ★ Mode changed to: Eco 🌿
+
+  Choose: 1
   ⚠ EcoMode: TurnOn(Living Room Lamp) blocked — save energy!
-  ⚠ Batch operations not allowed in Eco 🌿 mode
-
-  ★ Mode changed to: Party 🎉
-  Batch in PartyMode: ✅
-
-── Builder Demo (Custom Routine) ─────────────
-  ▶ Running routine: Movie Night
-  TurnOff, SetTemperature(23°C), Lock — all executed via Facade
 ```
 
 ## Reflektion — När man INTE ska använda mönster
