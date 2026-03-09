@@ -192,7 +192,7 @@ public class MenuHandler
             AddRoutineStep(builder, step, devices);
         }
 
-        builder.Build().Execute(_hub);
+        builder.Build().Execute(cmd => _hub.RunCommand(cmd));
         ShowSuccess($"Routine '{name}' executed");
     }
 

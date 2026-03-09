@@ -23,7 +23,7 @@ public class SmartHomeFacade
     {
         _devices.Add(device);
 
-        if (device is DeviceBase observable)
+        if (device is IObservable observable)
         {
             observable.Subscribe(_dashboard);
             observable.Subscribe(_loggerObserver);
@@ -99,6 +99,7 @@ public class SmartHomeFacade
 
     public IReadOnlyList<string> GetCommandHistory() => _invoker.GetHistory();
     public IReadOnlyList<string> GetAuditTrail() => _audit.AuditTrail;
+    public IReadOnlyList<string> GetNotifications() => _dashboard.Notifications;
 }
 
 public record CommandResult(bool Success, string? Message)

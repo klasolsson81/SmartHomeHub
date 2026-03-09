@@ -179,12 +179,16 @@ classDiagram
         +AllowBatchOperations() bool
     }
 
+    class IObservable {
+        <<interface>>
+        +Subscribe(IObserver)
+        +Unsubscribe(IObserver)
+    }
+
     class DeviceBase {
         <<abstract>>
         +string Name
         +bool IsOn
-        +Subscribe(IObserver)
-        +Unsubscribe(IObserver)
         #NotifyObservers(string)
         +TurnOn()
         +TurnOff()
@@ -315,6 +319,7 @@ classDiagram
     }
 
     IDevice <|.. DeviceBase
+    IObservable <|.. DeviceBase
     DeviceBase <|-- Lamp
     DeviceBase <|-- Thermostat
     DeviceBase <|-- DoorLock

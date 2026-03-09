@@ -2,7 +2,7 @@ using SmartHomeHub.Interfaces;
 
 namespace SmartHomeHub.Devices;
 
-public abstract class DeviceBase : IDevice
+public abstract class DeviceBase : IDevice, IObservable
 {
     private readonly List<IObserver> _observers = [];
 

@@ -29,5 +29,14 @@ public static class StatusDisplay
         }
 
         AnsiConsole.Write(table);
+
+        var notifications = hub.GetNotifications();
+        if (notifications.Count > 0)
+        {
+            var recent = notifications.TakeLast(3).ToList();
+            AnsiConsole.MarkupLine("\n[grey]  Recent:[/]");
+            foreach (var n in recent)
+                AnsiConsole.MarkupLine($"[grey]    {Markup.Escape(n)}[/]");
+        }
     }
 }

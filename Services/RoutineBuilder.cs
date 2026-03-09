@@ -25,6 +25,9 @@ public class RoutineBuilder
 
     public Routine Build()
     {
+        if (_steps.Count == 0)
+            throw new InvalidOperationException("Routine must have at least one step.");
+
         return new Routine(_name, [.. _steps]);
     }
 }
@@ -40,13 +43,9 @@ public class Routine
         _steps = steps;
     }
 
-    public void Execute(SmartHomeFacade facade)
+    public void Execute(Action<ICommand> runCommand)
     {
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine($"\n  ▶ Running routine: {Name}");
-        Console.ResetColor();
-
         foreach (var step in _steps)
-            facade.RunCommand(step);
+            runCommand(step);
     }
 }
