@@ -1,0 +1,26 @@
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="ring" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7aa2f7">
+        <animate attributeName="stop-color" values="#7aa2f7;#bb9af7;#7aa2f7" dur="3s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="50%" stop-color="#bb9af7">
+        <animate attributeName="stop-color" values="#bb9af7;#7aa2f7;#bb9af7" dur="3s" repeatCount="indefinite" />
+      </stop>
+      <stop offset="100%" stop-color="#414868">
+        <animate attributeName="stop-color" values="#414868;#7aa2f7;#414868" dur="3s" repeatCount="indefinite" />
+      </stop>
+    </linearGradient>
+    <clipPath id="circle">
+      <circle cx="80" cy="80" r="70" />
+    </clipPath>
+  </defs>
+
+  <!-- Animated gradient ring -->
+  <circle cx="80" cy="80" r="76" fill="none" stroke="url(#ring)" stroke-width="4">
+    <animateTransform attributeName="transform" type="rotate" from="0 80 80" to="360 80 80" dur="6s" repeatCount="indefinite" />
+  </circle>
+
+  <!-- Profile image clipped to circle -->
+  <image href="https://github.com/klasolsson81.png" x="10" y="10" width="140" height="140" clip-path="url(#circle)" />
+</svg>
