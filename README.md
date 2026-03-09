@@ -362,7 +362,7 @@ classDiagram
 ## &nbsp;Demo
 
 <div align="center">
-<img src="UI/demo.png" alt="Smart Home Hub — huvudmeny" width="500" />
+<img src="UI/demo.svg" alt="Smart Home Hub — interaktiv demo" width="520" />
 </div>
 
 > [!TIP]

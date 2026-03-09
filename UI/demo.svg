@@ -1,0 +1,298 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="580" viewBox="0 0 520 580">
+  <foreignObject width="520" height="580">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        .term {
+          width: 520px;
+          height: 580px;
+          background: #1a1b27;
+          border-radius: 12px;
+          overflow: hidden;
+          font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+          font-size: 13px;
+          position: relative;
+        }
+
+        .titlebar {
+          height: 36px;
+          background: #16161e;
+          display: flex;
+          align-items: center;
+          padding: 0 14px;
+          gap: 8px;
+        }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-r { background: #f7768e; }
+        .dot-y { background: #e0af68; }
+        .dot-g { background: #9ece6a; }
+        .titlebar-text {
+          color: #565f89;
+          font-size: 12px;
+          margin-left: 8px;
+          font-family: inherit;
+        }
+
+        .content {
+          padding: 16px 20px;
+          color: #a9b1d6;
+          line-height: 1.6;
+          position: relative;
+          height: 544px;
+        }
+
+        .scene {
+          position: absolute;
+          top: 16px;
+          left: 20px;
+          right: 20px;
+          opacity: 0;
+          animation-fill-mode: both;
+          animation-timing-function: ease-in-out;
+        }
+
+        /* 20s total loop: scene1 0-5s, scene2 5-10s, scene3 10-15s, scene4 15-20s */
+        .scene1 { animation: fade1 20s infinite; }
+        .scene2 { animation: fade2 20s infinite; }
+        .scene3 { animation: fade3 20s infinite; }
+        .scene4 { animation: fade4 20s infinite; }
+
+        @keyframes fade1 {
+          0%   { opacity: 0; }
+          2%   { opacity: 1; }
+          23%  { opacity: 1; }
+          25%  { opacity: 0; }
+          100% { opacity: 0; }
+        }
+        @keyframes fade2 {
+          0%   { opacity: 0; }
+          25%  { opacity: 0; }
+          27%  { opacity: 1; }
+          48%  { opacity: 1; }
+          50%  { opacity: 0; }
+          100% { opacity: 0; }
+        }
+        @keyframes fade3 {
+          0%   { opacity: 0; }
+          50%  { opacity: 0; }
+          52%  { opacity: 1; }
+          73%  { opacity: 1; }
+          75%  { opacity: 0; }
+          100% { opacity: 0; }
+        }
+        @keyframes fade4 {
+          0%   { opacity: 0; }
+          75%  { opacity: 0; }
+          77%  { opacity: 1; }
+          96%  { opacity: 1; }
+          98%  { opacity: 0; }
+          100% { opacity: 0; }
+        }
+
+        .cyan { color: #7dcfff; }
+        .green { color: #9ece6a; }
+        .red { color: #f7768e; }
+        .yellow { color: #e0af68; }
+        .grey { color: #565f89; }
+        .purple { color: #bb9af7; }
+        .bold { font-weight: bold; }
+
+        table {
+          border-collapse: collapse;
+          margin: 6px 0 12px 0;
+          width: 100%;
+        }
+        table th, table td {
+          padding: 4px 16px 4px 8px;
+          text-align: left;
+          font-family: inherit;
+          font-size: 13px;
+        }
+        table th {
+          color: #7dcfff;
+          border-bottom: 1px solid #414868;
+        }
+        table td {
+          color: #a9b1d6;
+        }
+        .tbl-border {
+          border: 1px solid #414868;
+          border-radius: 6px;
+          padding: 4px 0;
+          margin: 6px 0 14px 0;
+        }
+        .tbl-title {
+          color: #7dcfff;
+          font-weight: bold;
+          text-align: center;
+          padding-bottom: 4px;
+          font-size: 14px;
+        }
+
+        .menu-item {
+          padding: 1px 0;
+          color: #a9b1d6;
+        }
+        .menu-sel {
+          color: #9ece6a;
+          font-weight: bold;
+        }
+        .menu-arrow {
+          color: #9ece6a;
+        }
+
+        .prompt {
+          color: #7dcfff;
+          margin: 10px 0 8px 0;
+        }
+
+        .cursor {
+          display: inline-block;
+          width: 8px;
+          height: 15px;
+          background: #c0caf5;
+          animation: blink 1s step-end infinite;
+          vertical-align: text-bottom;
+          margin-left: 2px;
+        }
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0; }
+        }
+
+        .success {
+          color: #9ece6a;
+          margin: 6px 0;
+        }
+
+        .log-entry {
+          color: #565f89;
+          padding: 1px 0;
+          font-size: 12px;
+        }
+      </style>
+
+      <div class="term">
+        <div class="titlebar">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span class="titlebar-text">SmartHomeHub — dotnet run</span>
+        </div>
+
+        <div class="content">
+
+          <!-- SCENE 1: Initial state — all OFF, menu shown -->
+          <div class="scene scene1">
+            <div class="tbl-border">
+              <div class="tbl-title">Smart Home Control Center</div>
+              <table>
+                <tr><th>Device</th><th>Status</th></tr>
+                <tr><td class="yellow">Mode</td><td class="yellow">Normal</td></tr>
+                <tr><td>Living Room Lamp</td><td class="red">OFF</td></tr>
+                <tr><td>Main Thermostat</td><td>20°C <span class="red">OFF</span></td></tr>
+                <tr><td>Front Door</td><td class="red">Locked</td></tr>
+              </table>
+            </div>
+            <div class="prompt">What do you want to do?</div>
+            <div><span class="menu-arrow">› </span><span class="menu-sel">Toggle device</span></div>
+            <div class="menu-item">  Set temperature</div>
+            <div class="menu-item">  Lock / Unlock door</div>
+            <div class="menu-item">  Change mode</div>
+            <div class="menu-item">  Morning Routine</div>
+            <div class="menu-item">  Good Night Routine</div>
+            <div class="menu-item">  Build custom routine</div>
+            <div class="menu-item">  Batch: all lamps ON</div>
+            <div class="menu-item">  Add device</div>
+            <div class="menu-item">  Undo last command</div>
+            <div class="menu-item">  Replay last commands</div>
+            <div class="menu-item">  Command log (Invoker)</div>
+            <div class="menu-item">  Audit trail (Observer)</div>
+            <div class="menu-item">  Exit</div>
+          </div>
+
+          <!-- SCENE 2: Toggle lamp → ON, updated status -->
+          <div class="scene scene2">
+            <div class="tbl-border">
+              <div class="tbl-title">Smart Home Control Center</div>
+              <table>
+                <tr><th>Device</th><th>Status</th></tr>
+                <tr><td class="yellow">Mode</td><td class="yellow">Normal</td></tr>
+                <tr><td>Living Room Lamp</td><td class="green">ON</td></tr>
+                <tr><td>Main Thermostat</td><td>20°C <span class="red">OFF</span></td></tr>
+                <tr><td>Front Door</td><td class="red">Locked</td></tr>
+              </table>
+            </div>
+            <div class="prompt">Which device?</div>
+            <div><span class="menu-arrow">› </span><span class="menu-sel">Living Room Lamp</span></div>
+            <div class="menu-item">  Main Thermostat</div>
+            <div class="menu-item">  Front Door</div>
+            <div style="margin-top: 14px;"></div>
+            <div class="success">✓ Living Room Lamp turned ON</div>
+            <div style="margin-top: 10px;"></div>
+            <div class="grey">Recent:</div>
+            <div class="grey">  Living Room Lamp → Turned ON</div>
+            <div style="margin-top: 16px;"></div>
+            <div class="grey">Press Enter to continue...<span class="cursor"></span></div>
+          </div>
+
+          <!-- SCENE 3: Set temperature to 24°C -->
+          <div class="scene scene3">
+            <div class="tbl-border">
+              <div class="tbl-title">Smart Home Control Center</div>
+              <table>
+                <tr><th>Device</th><th>Status</th></tr>
+                <tr><td class="yellow">Mode</td><td class="yellow">Normal</td></tr>
+                <tr><td>Living Room Lamp</td><td class="green">ON</td></tr>
+                <tr><td>Main Thermostat</td><td>24°C <span class="green">ON</span></td></tr>
+                <tr><td>Front Door</td><td class="red">Locked</td></tr>
+              </table>
+            </div>
+            <div class="prompt">New temperature <span class="grey">(current 20°C, max 30°C)</span>:</div>
+            <div style="margin: 4px 0;">
+              <span class="purple">❯ </span><span style="color:#c0caf5;">24</span>
+            </div>
+            <div style="margin-top: 10px;"></div>
+            <div class="success">✓ Thermostat set to 24°C</div>
+            <div style="margin-top: 10px;"></div>
+            <div class="grey">Recent:</div>
+            <div class="grey">  Living Room Lamp → Turned ON</div>
+            <div class="grey">  Main Thermostat → Temperature set to 24°C</div>
+            <div style="margin-top: 16px;"></div>
+            <div class="grey">Press Enter to continue...<span class="cursor"></span></div>
+          </div>
+
+          <!-- SCENE 4: Command log view -->
+          <div class="scene scene4">
+            <div class="tbl-border">
+              <div class="tbl-title">Command Invoker — executed commands (undo/replay)</div>
+              <table>
+                <tr><th>Command</th></tr>
+                <tr><td>Turn ON Living Room Lamp</td></tr>
+                <tr><td>Set Main Thermostat to 24°C</td></tr>
+              </table>
+            </div>
+            <div style="margin-top: 8px;"></div>
+            <div class="tbl-border">
+              <div class="tbl-title">Observer Audit Trail — device state changes</div>
+              <table>
+                <tr><th>Event</th></tr>
+                <tr><td class="grey">Living Room Lamp → Turned ON</td></tr>
+                <tr><td class="grey">Main Thermostat → Temperature set to 24°C</td></tr>
+              </table>
+            </div>
+            <div style="margin-top: 16px;"></div>
+            <div class="prompt">What do you want to do?</div>
+            <div class="menu-item">  Toggle device</div>
+            <div class="menu-item">  Set temperature</div>
+            <div><span class="menu-arrow">› </span><span class="menu-sel">Undo last command</span></div>
+            <div class="menu-item">  Replay last commands</div>
+            <div class="menu-item">  Exit</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </foreignObject>
+</svg>
